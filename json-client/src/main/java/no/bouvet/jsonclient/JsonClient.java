@@ -7,6 +7,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 
 import java.util.List;
+import java.util.Map;
 
 public class JsonClient {
 
@@ -44,6 +45,11 @@ public class JsonClient {
     public <T> List<T> getList(String url, Class<T> clz) {
         HttpResponse response = HttpExecuter.get(httpClient, url);
         return jsonConverter.toList(response.getEntity(), clz);
+    }
+
+    public <T> Map<String, T> getMap(String url, Class<T> clz) {
+        HttpResponse response = HttpExecuter.get(httpClient, url);
+        return jsonConverter.toMap(response.getEntity(), clz);
     }
 
     public <T> T post(String url, String json, Class<T> clz) {

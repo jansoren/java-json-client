@@ -10,6 +10,7 @@ import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public class JsonConverter {
 
@@ -32,27 +33,37 @@ public class JsonConverter {
     }
 
     public <T> T toObject(HttpEntity entity, ContentType contentType, Class<T> clz) {
-        if(entity != null) {
-            try {
-                String entityStr = EntityUtils.toString(entity);
-                if (contentType == ContentType.APPLICATION_JSON) {
-                    return toObject(entityStr, clz);
-                } else {
-                    return (T)entityStr;
-                }
-            } catch (Exception e) {
-                throw new RuntimeException("Error when parsing response entity to " + clz, e);
+        try {
+            String entityStr = EntityUtils.toString(entity);
+            if (contentType == ContentType.APPLICATION_JSON) {
+                return toObject(entityStr, clz);
+            } else {
+                return (T)entityStr;
             }
+        } catch (Exception e) {
+            throw new RuntimeException("Error when parsing response entity to " + clz, e);
+        } finally {
+            EntityUtils.consumeQuietly(entity);
         }
-        return null;
     }
 
     public <T> List<T> toList(HttpEntity entity, Class<T> clz) {
         try {
-            String entityStr = EntityUtils.toString(entity);
-            return toList(entityStr, clz);
+            return toList(EntityUtils.toString(entity), clz);
         } catch (Exception e) {
             throw new RuntimeException("Error when parsing response entity to list of " + clz, e);
+        } finally {
+            EntityUtils.consumeQuietly(entity);
+        }
+    }
+
+    public <T> Map<String, T> toMap(HttpEntity entity, Class<T> clz) {
+        try {
+            return toMap(EntityUtils.toString(entity), clz);
+        } catch (Exception e) {
+            throw new RuntimeException("Error when parsing response entity to map of " + clz, e);
+        } finally {
+            EntityUtils.consumeQuietly(entity);
         }
     }
 
@@ -80,5 +91,12 @@ public class JsonConverter {
         }
     }
 
+    public <T> Map<String, T> toMap(String json, Class<T> clz) {
+        try {
+            return objectMapper.readValue(json, TypeFactory.defaultInstance().constructParametricType(Map.class, clz));
+        } catch (IOException e) {
+            throw new RuntimeException("Error when converting json to Map<String, " + clz + ">", e);
+        }
+    }
 
 }

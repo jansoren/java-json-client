@@ -9,7 +9,6 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.util.EntityUtils;
 
 public class HttpExecuter {
 
@@ -30,16 +29,10 @@ public class HttpExecuter {
     }
 
     private static HttpResponse execute(HttpClient httpClient, HttpUriRequest request) {
-        HttpResponse response = null;
         try {
-            response = httpClient.execute(request);
-            return response;
+            return httpClient.execute(request);
         } catch (Exception e) {
             throw new RuntimeException("Error when executing " + request, e);
-        } finally {
-            if (response != null) {
-                EntityUtils.consumeQuietly(response.getEntity());
-            }
         }
     }
 
