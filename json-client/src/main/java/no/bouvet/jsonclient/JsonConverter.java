@@ -1,9 +1,11 @@
 package no.bouvet.jsonclient;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.util.EntityUtils;
@@ -18,6 +20,7 @@ public class JsonConverter {
 
     public JsonConverter() {
         objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JodaModule());
     }
 
     public JsonConverter(ObjectMapper objectMapper) {
@@ -29,17 +32,12 @@ public class JsonConverter {
     }
 
     public <T> T toObject(HttpEntity entity, Class<T> clz) {
-        return toObject(entity, ContentType.APPLICATION_JSON, clz);
-    }
-
-    public <T> T toObject(HttpEntity entity, ContentType contentType, Class<T> clz) {
         try {
             String entityStr = EntityUtils.toString(entity);
-            if (contentType == ContentType.APPLICATION_JSON) {
+            if(entityStr != null && !entityStr.isEmpty()) {
                 return toObject(entityStr, clz);
-            } else {
-                return (T)entityStr;
             }
+            return null;
         } catch (Exception e) {
             throw new RuntimeException("Error when parsing response entity to " + clz, e);
         } finally {
@@ -49,7 +47,11 @@ public class JsonConverter {
 
     public <T> List<T> toList(HttpEntity entity, Class<T> clz) {
         try {
-            return toList(EntityUtils.toString(entity), clz);
+            String entityStr = EntityUtils.toString(entity);
+            if(entityStr != null && !entityStr.isEmpty()) {
+                return toList(entityStr, clz);
+            }
+            return null;
         } catch (Exception e) {
             throw new RuntimeException("Error when parsing response entity to list of " + clz, e);
         } finally {
@@ -59,7 +61,11 @@ public class JsonConverter {
 
     public <T> Map<String, T> toMap(HttpEntity entity, Class<T> clz) {
         try {
-            return toMap(EntityUtils.toString(entity), clz);
+            String entityStr = EntityUtils.toString(entity);
+            if(entityStr != null && !entityStr.isEmpty()) {
+                return toMap(entityStr, clz);
+            }
+            return null;
         } catch (Exception e) {
             throw new RuntimeException("Error when parsing response entity to map of " + clz, e);
         } finally {
@@ -85,7 +91,7 @@ public class JsonConverter {
 
     public <T> List<T> toList(String json, Class<T> clz) {
         try {
-            return objectMapper.readValue(json, TypeFactory.defaultInstance().constructParametricType(List.class, clz));
+            return objectMapper.readValue(json, new TypeReference<List<T>>(){});
         } catch (IOException e) {
             throw new RuntimeException("Error when converting json to List<" + clz + ">", e);
         }
@@ -93,7 +99,7 @@ public class JsonConverter {
 
     public <T> Map<String, T> toMap(String json, Class<T> clz) {
         try {
-            return objectMapper.readValue(json, TypeFactory.defaultInstance().constructParametricType(Map.class, clz));
+            return objectMapper.readValue(json, new TypeReference<Map<String, T>>(){});
         } catch (IOException e) {
             throw new RuntimeException("Error when converting json to Map<String, " + clz + ">", e);
         }

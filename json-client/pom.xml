@@ -12,6 +12,10 @@
 	<artifactId>json-client</artifactId>
 	<name>JSON Client</name>
 
+    <properties>
+        <jackson.version>2.4.3</jackson.version>
+    </properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
@@ -21,7 +25,12 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.4.3</version>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-joda</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
 			<groupId>junit</groupId>
