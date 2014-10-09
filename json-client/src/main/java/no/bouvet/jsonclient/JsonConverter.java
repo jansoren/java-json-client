@@ -59,6 +59,20 @@ public class JsonConverter {
         }
     }
 
+    public <T> List<List<T>> toListOfList(HttpEntity entity, Class<T> clz) {
+        try {
+            String entityStr = EntityUtils.toString(entity);
+            if(entityStr != null && !entityStr.isEmpty()) {
+                return toListOfList(entityStr, clz);
+            }
+            return null;
+        } catch (Exception e) {
+            throw new RuntimeException("Error when parsing response entity to list of " + clz, e);
+        } finally {
+            EntityUtils.consumeQuietly(entity);
+        }
+    }
+
     public <T> Map<String, T> toMap(HttpEntity entity, Class<T> clz) {
         try {
             String entityStr = EntityUtils.toString(entity);
@@ -92,6 +106,14 @@ public class JsonConverter {
     public <T> List<T> toList(String json, Class<T> clz) {
         try {
             return objectMapper.readValue(json, new TypeReference<List<T>>(){});
+        } catch (IOException e) {
+            throw new RuntimeException("Error when converting json to List<" + clz + ">", e);
+        }
+    }
+
+    public <T> List<List<T>> toListOfList(String json, Class<T> clz) {
+        try {
+            return objectMapper.readValue(json, new TypeReference<List<List<T>>>(){});
         } catch (IOException e) {
             throw new RuntimeException("Error when converting json to List<" + clz + ">", e);
         }

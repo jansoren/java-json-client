@@ -37,33 +37,55 @@ public class JsonClient {
         return this;
     }
 
+    public HttpResponse get(String url) {
+        return HttpExecuter.get(httpClient, url);
+    }
+
     public <T> T get(String url, Class<T> clz) {
-        HttpResponse response = HttpExecuter.get(httpClient, url);
-        return jsonConverter.toObject(response.getEntity(), clz);
+        return jsonConverter.toObject(get(url).getEntity(), clz);
     }
 
     public <T> List<T> getList(String url, Class<T> clz) {
-        HttpResponse response = HttpExecuter.get(httpClient, url);
-        return jsonConverter.toList(response.getEntity(), clz);
+        return jsonConverter.toList(get(url).getEntity(), clz);
     }
 
     public <T> Map<String, T> getMap(String url, Class<T> clz) {
-        HttpResponse response = HttpExecuter.get(httpClient, url);
-        return jsonConverter.toMap(response.getEntity(), clz);
+        return jsonConverter.toMap(get(url).getEntity(), clz);
+    }
+
+    public HttpResponse post(String url, String json) {
+        return HttpExecuter.post(httpClient, url, json);
     }
 
     public <T> T post(String url, String json, Class<T> clz) {
-        HttpResponse response = HttpExecuter.post(httpClient, url, json);
-        return jsonConverter.toObject(response.getEntity(), clz);
+        return jsonConverter.toObject(post(url, json).getEntity(), clz);
+    }
+
+    public <T> List<T> postList(String url, String json, Class<T> clz) {
+        return jsonConverter.toList(post(url, json).getEntity(), clz);
+    }
+
+    public <T> List<List<T>> postListOfList(String url, String json, Class<T> clz) {
+        return jsonConverter.toListOfList(post(url, json).getEntity(), clz);
+    }
+
+    public <T> Map<String, T> postMap(String url, String json, Class<T> clz) {
+        return jsonConverter.toMap(post(url, json).getEntity(), clz);
+    }
+
+    public HttpResponse put(String url, String json) {
+        return HttpExecuter.put(httpClient, url, json);
     }
 
     public <T> T put(String url, String json, Class<T> clz) {
-        HttpResponse response = HttpExecuter.put(httpClient, url, json);
-        return jsonConverter.toObject(response.getEntity(), clz);
+        return jsonConverter.toObject(put(url, json).getEntity(), clz);
+    }
+
+    public HttpResponse delete(String url) {
+        return HttpExecuter.delete(httpClient, url);
     }
 
     public <T> T delete(String url, Class<T> clz) {
-        HttpResponse response = HttpExecuter.delete(httpClient, url);
-        return jsonConverter.toObject(response.getEntity(), clz);
+        return jsonConverter.toObject(delete(url).getEntity(), clz);
     }
 }
