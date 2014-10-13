@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import org.apache.http.HttpEntity;
@@ -105,7 +106,7 @@ public class JsonConverter {
 
     public <T> List<T> toList(String json, Class<T> clz) {
         try {
-            return objectMapper.readValue(json, new TypeReference<List<T>>(){});
+            return objectMapper.readValue(json, getTypeFactory().constructParametricType(List.class, clz));
         } catch (IOException e) {
             throw new RuntimeException("Error when converting json to List<" + clz + ">", e);
         }
@@ -113,7 +114,7 @@ public class JsonConverter {
 
     public <T> List<List<T>> toListOfList(String json, Class<T> clz) {
         try {
-            return objectMapper.readValue(json, new TypeReference<List<List<T>>>(){});
+            return objectMapper.readValue(json, getTypeFactory().constructParametricType(List.class, getTypeFactory().constructParametricType(List.class, clz)));
         } catch (IOException e) {
             throw new RuntimeException("Error when converting json to List<" + clz + ">", e);
         }
@@ -127,4 +128,7 @@ public class JsonConverter {
         }
     }
 
+    private TypeFactory getTypeFactory() {
+        return objectMapper.getTypeFactory();
+    }
 }
