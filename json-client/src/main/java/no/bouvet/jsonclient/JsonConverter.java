@@ -4,12 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import org.apache.http.HttpEntity;
-import org.apache.http.entity.ContentType;
 import org.apache.http.util.EntityUtils;
+import org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean;
 
 import java.io.IOException;
 import java.util.List;
@@ -20,7 +19,7 @@ public class JsonConverter {
     private ObjectMapper objectMapper;
 
     public JsonConverter() {
-        objectMapper = new ObjectMapper();
+        objectMapper = createObjectMapper();
         objectMapper.registerModule(new JodaModule());
     }
 
@@ -131,4 +130,13 @@ public class JsonConverter {
     private TypeFactory getTypeFactory() {
         return objectMapper.getTypeFactory();
     }
+
+    private ObjectMapper createObjectMapper() {
+        Jackson2ObjectMapperFactoryBean bean = new Jackson2ObjectMapperFactoryBean();
+        bean.setIndentOutput(true);
+        bean.setSimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        bean.afterPropertiesSet();
+        return bean.getObject();
+    }
+
 }
