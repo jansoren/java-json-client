@@ -53,32 +53,34 @@ public class JsonClient {
         return jsonConverter.toMap(get(url).getEntity(), clz);
     }
 
-    public HttpResponse post(String url, String json) {
+    public HttpResponse post(String url, Object object) {
+        String json = jsonConverter.toJson(object);
         return HttpExecuter.post(httpClient, url, json);
     }
 
-    public <T> T post(String url, String json, Class<T> clz) {
-        return jsonConverter.toObject(post(url, json).getEntity(), clz);
+    public <T> T post(String url, Object object, Class<T> clz) {
+        return jsonConverter.toObject(post(url, object).getEntity(), clz);
     }
 
-    public <T> List<T> postList(String url, String json, Class<T> clz) {
-        return jsonConverter.toList(post(url, json).getEntity(), clz);
+    public <T> List<T> postList(String url, Object object, Class<T> clz) {
+        return jsonConverter.toList(post(url, object).getEntity(), clz);
     }
 
-    public <T> List<List<T>> postListOfList(String url, String json, Class<T> clz) {
-        return jsonConverter.toListOfList(post(url, json).getEntity(), clz);
+    public <T> List<List<T>> postListOfList(String url, Object object, Class<T> clz) {
+        return jsonConverter.toListOfList(post(url, object).getEntity(), clz);
     }
 
-    public <T> Map<String, T> postMap(String url, String json, Class<T> clz) {
-        return jsonConverter.toMap(post(url, json).getEntity(), clz);
+    public <T> Map<String, T> postMap(String url, Object object, Class<T> clz) {
+        return jsonConverter.toMap(post(url, object).getEntity(), clz);
     }
 
-    public HttpResponse put(String url, String json) {
+    public HttpResponse put(String url, Object object) {
+        String json = jsonConverter.toJson(object);
         return HttpExecuter.put(httpClient, url, json);
     }
 
-    public <T> T put(String url, String json, Class<T> clz) {
-        return jsonConverter.toObject(put(url, json).getEntity(), clz);
+    public <T> T put(String url, Object object, Class<T> clz) {
+        return jsonConverter.toObject(put(url, object).getEntity(), clz);
     }
 
     public HttpResponse delete(String url) {
