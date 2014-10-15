@@ -2,6 +2,7 @@ package no.bouvet.jsonclient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.bouvet.jsonclient.builders.HttpSSLClientBuilder;
+import no.bouvet.jsonclient.http.HttpExecuter;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
