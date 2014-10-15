@@ -1,27 +1,25 @@
 package no.bouvet.jsonclient;
 
-import org.joda.time.DateTime;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertNotNull;
 
-public class ConvertTestObjectTest {
+public class ConvertEmptyTestObjectTest {
 
     private JsonConverter converter = new JsonConverter();
 
     @Test
     public void testConvertToJson() {
-        String json = converter.toJson(createTestObject());
+        String json = converter.toJson(new TestObject());
         assertNotNull(json);
     }
 
     @Test
     public void testConvertToObject() {
-        String json = converter.toJson(createTestObject());
+        String json = converter.toJson(new TestObject());
         TestObject testObject = converter.toObject(json, TestObject.class);
         assertNotNull(testObject);
     }
@@ -32,7 +30,6 @@ public class ConvertTestObjectTest {
         List<TestObject> list = converter.toList(json, TestObject.class);
         assertNotNull(list);
         assertNotNull(list.get(0));
-        assertTrue(list.get(0).getDate() instanceof DateTime);
     }
 
     @Test
@@ -41,7 +38,6 @@ public class ConvertTestObjectTest {
         List<List<TestObject>> listOfList = converter.toListOfList(json, TestObject.class);
         assertNotNull(listOfList);
         assertNotNull(listOfList.get(0).get(0));
-        assertTrue(listOfList.get(0).get(0).getDate() instanceof DateTime);
     }
 
     private List<List<TestObject>> createListOfList() {
@@ -52,19 +48,12 @@ public class ConvertTestObjectTest {
         return listOfList;
     }
 
+
     private List<TestObject> createList() {
         List<TestObject> list = new ArrayList<TestObject>();
-        list.add(createTestObject());
-        list.add(createTestObject());
-        list.add(createTestObject());
+        list.add(new TestObject());
+        list.add(new TestObject());
+        list.add(new TestObject());
         return list;
-    }
-
-    private TestObject createTestObject() {
-        TestObject testObject = new TestObject();
-        testObject.setId(123);
-        testObject.setText("some text");
-        testObject.setDate(new DateTime());
-        return testObject;
     }
 }
