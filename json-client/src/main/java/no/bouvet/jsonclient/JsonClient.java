@@ -14,6 +14,7 @@ public class JsonClient {
 
     private JsonConverter jsonConverter;
     private HttpClient httpClient;
+    private HttpResponse response;
 
     public JsonClient() {
         jsonConverter = new JsonConverter();
@@ -38,57 +39,45 @@ public class JsonClient {
         return this;
     }
 
-    public HttpResponse get(String url) {
-        return HttpExecuter.get(httpClient, url);
+    public HttpResponse response() {
+        return response;
     }
 
-    public <T> T get(String url, Class<T> clz) {
-        return jsonConverter.toObject(get(url).getEntity(), clz);
+    public <T> T object(Class<T> clz) {
+        return jsonConverter.toObject(response.getEntity(), clz);
     }
 
-    public <T> List<T> getList(String url, Class<T> clz) {
-        return jsonConverter.toList(get(url).getEntity(), clz);
+    public <T> List<T> list(Class<T> clz) {
+        return jsonConverter.toList(response.getEntity(), clz);
     }
 
-    public <T> Map<String, T> getMap(String url, Class<T> clz) {
-        return jsonConverter.toMap(get(url).getEntity(), clz);
+    public <T> List<List<T>> listOfList(Class<T> clz) {
+        return jsonConverter.toListOfList(response.getEntity(), clz);
     }
 
-    public HttpResponse post(String url, Object object) {
+    public <T> Map<String, T> map(Class<T> clz) {
+        return jsonConverter.toMap(response.getEntity(), clz);
+    }
+
+    public JsonClient get(String url) {
+        response = HttpExecuter.get(httpClient, url);
+        return this;
+    }
+
+    public JsonClient post(String url, Object object) {
         String json = jsonConverter.toJson(object);
-        return HttpExecuter.post(httpClient, url, json);
+        response = HttpExecuter.post(httpClient, url, json);
+        return this;
     }
 
-    public <T> T post(String url, Object object, Class<T> clz) {
-        return jsonConverter.toObject(post(url, object).getEntity(), clz);
-    }
-
-    public <T> List<T> postList(String url, Object object, Class<T> clz) {
-        return jsonConverter.toList(post(url, object).getEntity(), clz);
-    }
-
-    public <T> List<List<T>> postListOfList(String url, Object object, Class<T> clz) {
-        return jsonConverter.toListOfList(post(url, object).getEntity(), clz);
-    }
-
-    public <T> Map<String, T> postMap(String url, Object object, Class<T> clz) {
-        return jsonConverter.toMap(post(url, object).getEntity(), clz);
-    }
-
-    public HttpResponse put(String url, Object object) {
+    public JsonClient put(String url, Object object) {
         String json = jsonConverter.toJson(object);
-        return HttpExecuter.put(httpClient, url, json);
+        response = HttpExecuter.put(httpClient, url, json);
+        return this;
     }
 
-    public <T> T put(String url, Object object, Class<T> clz) {
-        return jsonConverter.toObject(put(url, object).getEntity(), clz);
-    }
-
-    public HttpResponse delete(String url) {
-        return HttpExecuter.delete(httpClient, url);
-    }
-
-    public <T> T delete(String url, Class<T> clz) {
-        return jsonConverter.toObject(delete(url).getEntity(), clz);
+    public JsonClient delete(String url) {
+        response = HttpExecuter.delete(httpClient, url);
+        return this;
     }
 }
