@@ -68,6 +68,22 @@ If you are using Spring and Joda DateTime you might need to configure it using [
     </mvc:message-converters>
 </mvc:annotation-driven>
 ```
+This how you solve it using Spring 4 annotation configuration
+```
+@Configuration
+@ComponentScan("no.bouvet.app")
+@EnableWebMvc
+public class DispatcherConfig extends WebMvcConfigurerAdapter {
+
+    @Override
+    public void configureMessageConverters(List<HttpMessageConverter<?>> converters){
+        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+        converter.setObjectMapper(new JsonClientJackson2ObjectMapperFactoryBean().getObject());
+        converters.add(converter);
+        super.configureMessageConverters(converters);
+    }
+}
+```
 
 This library has been tested on a REST API implemented in:
  - [Jersey](https://jersey.java.net/) 
