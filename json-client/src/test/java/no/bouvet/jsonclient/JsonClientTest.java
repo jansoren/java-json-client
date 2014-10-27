@@ -11,7 +11,7 @@ public class JsonClientTest {
         jsonClient.http().get("http://www.google.no").object(TestObject.class);
     }
 
-    @Test
+    @Test(expected=RuntimeException.class)
     public void testThatHttpClientThrowsExceptionWhenNull() {
         jsonClient.get("http://www.google.no");
     }
