@@ -14,6 +14,8 @@ import java.util.Map;
 
 public class JsonConverter {
 
+    private final String CONTENT_TYPE_JSON = "application/json";
+
     private ObjectMapper objectMapper;
 
     public JsonConverter() {
@@ -36,7 +38,7 @@ public class JsonConverter {
             }
             return null;
         } catch (Exception e) {
-            throw new RuntimeException("Error when parsing response entity to " + clz, e);
+            throw new RuntimeException(getToObjectError(entity, clz, "object"), e);
         } finally {
             EntityUtils.consumeQuietly(entity);
         }
@@ -50,7 +52,7 @@ public class JsonConverter {
             }
             return null;
         } catch (Exception e) {
-            throw new RuntimeException("Error when parsing response entity to list of " + clz, e);
+            throw new RuntimeException(getToObjectError(entity, clz, "list"), e);
         } finally {
             EntityUtils.consumeQuietly(entity);
         }
@@ -64,7 +66,7 @@ public class JsonConverter {
             }
             return null;
         } catch (Exception e) {
-            throw new RuntimeException("Error when parsing response entity to list of " + clz, e);
+            throw new RuntimeException(getToObjectError(entity, clz, "list of list"), e);
         } finally {
             EntityUtils.consumeQuietly(entity);
         }
@@ -78,7 +80,7 @@ public class JsonConverter {
             }
             return null;
         } catch (Exception e) {
-            throw new RuntimeException("Error when parsing response entity to map of " + clz, e);
+            throw new RuntimeException(getToObjectError(entity, clz, "map"), e);
         } finally {
             EntityUtils.consumeQuietly(entity);
         }
@@ -128,4 +130,22 @@ public class JsonConverter {
         return objectMapper.getTypeFactory();
     }
 
+    private <T> String getToObjectError(HttpEntity entity, Class<T> clz, String type) {
+        String error = "Error when parsing response entity to " + type + " of " + clz + ". ";
+        if (!isContentTypeJson(entity)) {
+            error += "Content Type should be '" + CONTENT_TYPE_JSON + "' but was '" + getContentType(entity) + "'";
+        }
+        return error;
+    }
+
+    private boolean isContentTypeJson(HttpEntity entity) {
+        if (getContentType(entity).contains(CONTENT_TYPE_JSON)) {
+            return true;
+        }
+        return false;
+    }
+
+    private String getContentType(HttpEntity entity) {
+        return entity.getContentType().getValue();
+    }
 }

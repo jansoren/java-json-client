@@ -60,24 +60,44 @@ public class JsonClient {
     }
 
     public JsonClient get(String url) {
-        response = HttpExecuter.get(httpClient, url);
-        return this;
+        if(httpClient != null) {
+            response = HttpExecuter.get(httpClient, url);
+            return this;
+        } else {
+            throw new RuntimeException(getHttpClientIsNullError());
+        }
     }
 
     public JsonClient post(String url, Object object) {
-        String json = jsonConverter.toJson(object);
-        response = HttpExecuter.post(httpClient, url, json);
-        return this;
+        if(httpClient != null) {
+            String json = jsonConverter.toJson(object);
+            response = HttpExecuter.post(httpClient, url, json);
+            return this;
+        } else {
+            throw new RuntimeException(getHttpClientIsNullError());
+        }
     }
 
     public JsonClient put(String url, Object object) {
-        String json = jsonConverter.toJson(object);
-        response = HttpExecuter.put(httpClient, url, json);
-        return this;
+        if(httpClient != null) {
+            String json = jsonConverter.toJson(object);
+            response = HttpExecuter.put(httpClient, url, json);
+            return this;
+        } else {
+            throw new RuntimeException(getHttpClientIsNullError());
+        }
     }
 
     public JsonClient delete(String url) {
-        response = HttpExecuter.delete(httpClient, url);
-        return this;
+        if(httpClient != null) {
+            response = HttpExecuter.delete(httpClient, url);
+            return this;
+        } else {
+            throw new RuntimeException(getHttpClientIsNullError());
+        }
+    }
+
+    private String getHttpClientIsNullError() {
+        return "Http client has not been created. Call method 'http()' or 'ssl()' on your JsonClient";
     }
 }
