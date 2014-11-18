@@ -3,6 +3,7 @@ package no.bouvet.jsonclient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.bouvet.jsonclient.builders.HttpSSLClientBuilder;
 import no.bouvet.jsonclient.http.HttpExecuter;
+import no.bouvet.jsonclient.poller.Poller;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -15,6 +16,7 @@ public class JsonClient {
     private JsonConverter jsonConverter;
     private HttpClient httpClient;
     private HttpResponse response;
+    private long sleepInMs = 500;
 
     public JsonClient() {
         jsonConverter = new JsonConverter();
@@ -59,6 +61,34 @@ public class JsonClient {
         return jsonConverter.toMap(response.getEntity(), clz);
     }
 
+    public <T> T poll(String url, Class<T> clz, long timeoutInMs) {
+        long startTime = System.currentTimeMillis();
+        long endTime = startTime;
+
+        T object = executeGet(url, clz);
+        while (object == null && endTime - startTime < timeoutInMs) {
+            threadSleep();
+            object = executeGet(url, clz);
+            endTime = System.currentTimeMillis();
+        }
+        return object;
+    }
+
+    public <T> T poll(String url, Class<? extends Poller> clz, long timeoutInMs, Object... conditions) {
+        long startTime = System.currentTimeMillis();
+        long endTime = startTime;
+
+        Poller poller = executeGet(url, clz);
+        boolean isConditionFulfilled = isConditionFulfilled(poller, conditions);
+        while ((poller == null || !isConditionFulfilled) && endTime - startTime < timeoutInMs) {
+            threadSleep();
+            poller = executeGet(url, clz);
+            isConditionFulfilled = isConditionFulfilled(poller, conditions);
+            endTime = System.currentTimeMillis();
+        }
+        return (T) poller;
+    }
+
     public JsonClient get(String url) {
         if(httpClient != null) {
             response = HttpExecuter.get(httpClient, url);
@@ -99,5 +129,23 @@ public class JsonClient {
 
     private String getHttpClientIsNullError() {
         return "Http client has not been created. Call method 'http()' or 'ssl()' on your JsonClient";
+    }
+
+    private <T> T executeGet(String url, Class<T> clz) {
+        HttpResponse response = HttpExecuter.get(httpClient, url);
+        return jsonConverter.toObject(response.getEntity(), clz);
+    }
+
+    private void threadSleep() {
+        try {
+            Thread.sleep(sleepInMs);
+        } catch (InterruptedException e) {}
+    }
+
+    private boolean isConditionFulfilled(Poller poller, Object... conditions) {
+        if(poller != null) {
+            return poller.isConditionFulfilled(conditions);
+        }
+        return false;
     }
 }
