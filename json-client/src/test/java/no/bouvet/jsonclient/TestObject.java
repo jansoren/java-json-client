@@ -1,8 +1,9 @@
 package no.bouvet.jsonclient;
 
+import no.bouvet.jsonclient.poller.Poller;
 import org.joda.time.DateTime;
 
-public class TestObject {
+public class TestObject implements Poller {
 
     private long id;
     private String text;
@@ -30,5 +31,10 @@ public class TestObject {
 
     public void setDate(DateTime date) {
         this.date = date;
+    }
+
+    @Override
+    public boolean isConditionFulfilled(Object... conditions) {
+        return id == conditions[0];
     }
 }
