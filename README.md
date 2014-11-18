@@ -9,7 +9,7 @@ This is a library that provides you with a simple way to do http/https requests 
 <dependency>
     <groupId>no.bouvet</groupId>
     <artifactId>json-client</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 </dependency>
 ```
 
@@ -54,6 +54,16 @@ List<MyObject> myObject = jsonClient.http().get("http://").listOfList(MyObject.c
 How you get and parse your response directly to your preferred map:
 ```
 Map<String, MyObject> myObject = jsonClient.http().get("http://").map(MyObject.class);
+```
+
+How to poll for data and trigger when condition is fulfilled (MyObject has to implement Poller)
+```
+MyObject myObject = jsonClient.http().poll("http://", MyObject.class, 5000, otherObject.getId());
+```
+
+How to poll for data without any conditions. 
+```
+MyObject myObject = jsonClient.http().poll("http://", MyObject.class, 5000);
 ```
 
 If you are using Spring and Joda DateTime you might need to configure it using [JsonClientJackson2ObjectMapperFactoryBean](https://github.com/bouvet-openlab/java-json-client/blob/master/json-client/src/main/java/no/bouvet/jsonclient/spring/JsonClientJackson2ObjectMapperFactoryBean.java) in your servlet.xml
