@@ -9,7 +9,7 @@ This is a library that provides you with a simple way to do http/https requests 
 <dependency>
     <groupId>no.bouvet</groupId>
     <artifactId>json-client</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
 </dependency>
 ```
 
@@ -56,9 +56,9 @@ How you get and parse your response directly to your preferred map:
 Map<String, MyObject> myObject = jsonClient.http().get("http://").map(MyObject.class);
 ```
 
-How to poll for data and trigger when condition is fulfilled (MyObject has to implement Poller)
+How to poll for data and trigger when condition is fulfilled
 ```
-MyObject myObject = jsonClient.http().poll("http://", MyObject.class, 5000, otherObject.getId());
+MyObject myObject = jsonClient.http().poll("http://", MyObject.class, 5000, new [TestObjectCondition(state)](https://github.com/bouvet-openlab/java-json-client/blob/master/json-client/src/test/java/no/bouvet/jsonclient/TestObjectCondition.java));
 ```
 
 How to poll for data without any conditions. 
