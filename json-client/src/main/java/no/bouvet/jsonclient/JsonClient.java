@@ -3,7 +3,6 @@ package no.bouvet.jsonclient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.bouvet.jsonclient.builders.HttpSSLClientBuilder;
 import no.bouvet.jsonclient.http.HttpExecuter;
-import no.bouvet.jsonclient.poller.Poller;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -74,19 +73,19 @@ public class JsonClient {
         return object;
     }
 
-    public <T> T poll(String url, Class<? extends Poller> clz, long timeoutInMs, Object... conditions) {
+    public <T> T poll(String url, Class<T> clz, long timeoutInMs, Condition<T> condition) {
         long startTime = System.currentTimeMillis();
         long endTime = startTime;
 
-        Poller poller = executeGet(url, clz);
-        boolean isConditionFulfilled = isConditionFulfilled(poller, conditions);
-        while ((poller == null || !isConditionFulfilled) && endTime - startTime < timeoutInMs) {
+        T object = executeGet(url, clz);
+        boolean isConditionFulfilled = condition.isFulfilled(object);
+        while ((object == null || !isConditionFulfilled) && endTime - startTime < timeoutInMs) {
             threadSleep();
-            poller = executeGet(url, clz);
-            isConditionFulfilled = isConditionFulfilled(poller, conditions);
+            object = executeGet(url, clz);
+            isConditionFulfilled = condition.isFulfilled(object);
             endTime = System.currentTimeMillis();
         }
-        return (T) poller;
+        return (T) object;
     }
 
     public JsonClient get(String url) {
@@ -142,10 +141,4 @@ public class JsonClient {
         } catch (InterruptedException e) {}
     }
 
-    private boolean isConditionFulfilled(Poller poller, Object... conditions) {
-        if(poller != null) {
-            return poller.isConditionFulfilled(conditions);
-        }
-        return false;
-    }
 }

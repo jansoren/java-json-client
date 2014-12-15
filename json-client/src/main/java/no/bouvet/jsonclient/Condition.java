@@ -1,4 +1,6 @@
 package no.bouvet.jsonclient;
 
-public class Condition {
+public interface Condition<T> {
+
+    public boolean isFulfilled(T object);
 }
