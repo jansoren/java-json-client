@@ -56,9 +56,9 @@ How you get and parse your response directly to your preferred map:
 Map<String, MyObject> myObject = jsonClient.http().get("http://").map(MyObject.class);
 ```
 
-How to poll for data and trigger when condition is fulfilled
+How to poll for data and trigger when condition is fulfilled (example - [TestObjectCondition](https://github.com/bouvet-openlab/java-json-client/blob/master/json-client/src/test/java/no/bouvet/jsonclient/TestObjectCondition.java) )
 ```
-MyObject myObject = jsonClient.http().poll("http://", MyObject.class, 5000, new [TestObjectCondition(state)](https://github.com/bouvet-openlab/java-json-client/blob/master/json-client/src/test/java/no/bouvet/jsonclient/TestObjectCondition.java));
+MyObject myObject = jsonClient.http().poll("http://", MyObject.class, 5000, new TestObjectCondition(state));
 ```
 
 How to poll for data without any conditions. 
