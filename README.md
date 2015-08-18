@@ -9,7 +9,7 @@ This is a library that provides you with a simple way to do http/https requests 
 <dependency>
     <groupId>no.bouvet</groupId>
     <artifactId>json-client</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
 </dependency>
 ```
 
