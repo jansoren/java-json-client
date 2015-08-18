@@ -12,14 +12,17 @@
 	<name>JSON Client</name>
 
     <properties>
-        <jackson.version>2.4.3</jackson.version>
+        <jackson.version>2.6.1</jackson.version>
+        <httpclient.version>4.5</httpclient.version>
+        <junit.version>4.12</junit.version>
+        <spring.version>4.2.0.RELEASE</spring.version>
     </properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
-			<version>4.3.5</version>
+			<version>${httpclient.version}</version>
 		</dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -34,13 +37,13 @@
         <dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.11</version>
+			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
-            <version>4.1.1.RELEASE</version>
+            <version>${spring.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

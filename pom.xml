@@ -8,6 +8,18 @@
     <name>JSON Client Parent</name>
     <description>Parent project for JSON Client</description>
     <url>https://github.com/bouvet-openlab/json-client</url>
+    <prerequisites>
+        <maven>3.1.0</maven>
+    </prerequisites>
+    <properties>
+        <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
+        <maven-source-plugin.version>2.4</maven-source-plugin.version>
+        <maven-javadoc-plugin.version>2.10.3</maven-javadoc-plugin.version>
+        <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
+        <maven-release-plugin.version>2.5.2</maven-release-plugin.version>
+        <nexus-staging-maven-plugin.version>1.6.6</nexus-staging-maven-plugin.version>
+        <versions-maven-plugin.version>2.2</versions-maven-plugin.version>
+    </properties>
     <modules>
         <module>json-client</module>
     </modules>
@@ -47,18 +59,8 @@
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <version>3.1</version>
-                        <configuration>
-                            <source>1.7</source>
-                            <target>1.7</target>
-                            <encoding>UTF-8</encoding>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
-                        <version>2.2.1</version>
+                        <version>${maven-source-plugin.version}</version>
                         <executions>
                             <execution>
                                 <id>attach-sources</id>
@@ -71,7 +73,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>2.9.1</version>
+                        <version>${maven-javadoc-plugin.version}</version>
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>
@@ -84,7 +86,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.5</version>
+                        <version>${maven-gpg-plugin.version}</version>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
@@ -100,12 +102,39 @@
         </profile>
     </profiles>
     <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>${versions-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>display-dependency-updates</goal>
+                            <goal>display-plugin-updates</goal>
+                            <goal>display-property-updates</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
         <pluginManagement>
             <plugins>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-release-plugin</artifactId>
-                    <version>2.5</version>
+                    <version>${maven-release-plugin.version}</version>
                     <configuration>
                         <mavenExecutorId>forked-path</mavenExecutorId>
                         <useReleaseProfile>false</useReleaseProfile>
@@ -118,7 +147,7 @@
                 <plugin>
                     <groupId>org.sonatype.plugins</groupId>
                     <artifactId>nexus-staging-maven-plugin</artifactId>
-                    <version>1.6.4</version>
+                    <version>${nexus-staging-maven-plugin.version}</version>
                     <extensions>true</extensions>
                     <configuration>
                         <serverId>ossrh</serverId>
